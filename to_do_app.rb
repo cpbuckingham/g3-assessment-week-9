@@ -59,12 +59,29 @@ class ToDoApp < Sinatra::Application
     redirect "/"
   end
 
+  get "/todos/new" do
+
+  end
+    get "/todos/:id" do
+    item = ToDoItem.find(params[:id])
+    erb :todos, locals: {body: item}
+  end
+
   post "/todos" do
     ToDoItem.create(body: params[:body])
-
     flash[:notice] = "ToDo added"
-
     redirect "/"
+  end
+
+  patch "/todos/:id/edit" do
+    item = ToDoItem.find(params[:id])
+    item.update(body: params[:body])
+    redirect "/"
+
+  end
+  get "/todos/:id/edit" do
+    item = @database_connection.sql("SELECT * FROM to_do_items WHERE id=#{params[:id]}").first
+    erb :"todos/edit", locals: {body: item}
   end
 
   private

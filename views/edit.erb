@@ -1,0 +1,6 @@
+<h2>Edit Message:</h2>
+<form method="post" action="/todos/<%= to_to_items["id"] %>">
+  <input type="hidden" name="_method" value="patch" />
+  <input type="text" name="message" id="edit_message" value="<%= to_do_items["body"] %>"/>
+  <input type="submit" value="Update" />
+</form>
