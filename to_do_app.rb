@@ -59,12 +59,9 @@ class ToDoApp < Sinatra::Application
     redirect "/"
   end
 
-  get "/todos/new" do
-
-  end
-    get "/todos/:id" do
+    get "/todos" do
     item = ToDoItem.find(params[:id])
-    erb :todos, locals: {body: item}
+    erb :todo_edit, locals: {body: item}
   end
 
   post "/todos" do
@@ -73,17 +70,24 @@ class ToDoApp < Sinatra::Application
     redirect "/"
   end
 
-  patch "/todos/:id/edit" do
-    item = ToDoItem.find(params[:id])
-    item.update(body: params[:body])
-    redirect "/"
-
-  end
   get "/todos/:id/edit" do
-    item = @database_connection.sql("SELECT * FROM to_do_items WHERE id=#{params[:id]}").first
-    erb :"todos/edit", locals: {body: item}
+    erb :todo_edit, :locals => {:todo => ToDoItem.find(params[:id])}
   end
 
+  patch "/todos/:id" do
+    item = ToDoItem.find(params[:id])
+    item.body = params[:body]
+    item.save
+    flash[:notice] = "ToDo updated"
+    redirect "/"
+  end
+
+  delete "/todos/:id" do
+    item = ToDoItem.find(params[:id])
+    item.destroy
+    flash[:notice] = "ToDo completed"
+    redirect "/"
+  end
   private
 
   def authenticate_user
